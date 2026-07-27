@@ -374,11 +374,12 @@ async function renderGraph(graph: HTMLElement, fullSlug: FullSlug) {
   for (const n of graphData.nodes) {
     const nodeId = n.id
 
+    const initialLabelAlpha = Math.min(Math.max((opacityScale - 0.5) / 2, 0), 1)
     const label = new Text({
       interactive: false,
       eventMode: "none",
       text: n.text,
-      alpha: 0,
+      alpha: initialLabelAlpha,
       anchor: { x: 0.5, y: 1.2 },
       style: {
         fontSize: fontSize * 15,
@@ -511,7 +512,7 @@ async function renderGraph(graph: HTMLElement, fullSlug: FullSlug) {
 
           // zoom adjusts opacity of labels too
           const scale = transform.k * opacityScale
-          let scaleOpacity = Math.max((scale - 1) / 3.75, 0)
+          let scaleOpacity = Math.min(Math.max((scale - 0.5) / 2, 0), 1)
           const activeNodes = nodeRenderData.filter((n) => n.active).flatMap((n) => n.label)
 
           for (const label of labelsContainer.children) {
