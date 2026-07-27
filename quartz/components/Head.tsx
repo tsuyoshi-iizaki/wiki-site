@@ -97,6 +97,45 @@ export default (() => {
             return resource
           }
         })}
+        <style dangerouslySetInnerHTML={{ __html: `
+          body:not(.wiki-authed) #quartz-root { display: none !important; }
+          body:not(.wiki-authed) footer { display: none !important; }
+          .wiki-gate {
+            position: fixed; inset: 0; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--light, #faf8f8);
+            font-family: var(--bodyFont, system-ui);
+          }
+          .wiki-gate-card {
+            text-align: center; padding: 2rem;
+            border: 1px solid var(--lightgray, #e5e5e5);
+            border-radius: 8px; max-width: 320px; width: 90%;
+            background: var(--light, #fff);
+          }
+          .wiki-gate-card h2 { margin: 0 0 1rem; color: var(--dark, #2b2b2b); }
+          .wiki-gate-card input {
+            width: 100%; padding: .5rem; margin-bottom: .75rem;
+            border: 1px solid var(--lightgray, #ccc); border-radius: 4px;
+            font-size: 1rem; box-sizing: border-box;
+          }
+          .wiki-gate-card button {
+            width: 100%; padding: .5rem; border: none; border-radius: 4px;
+            background: var(--secondary, #284b63); color: #fff;
+            font-size: 1rem; cursor: pointer;
+          }
+          .wiki-gate-card button:hover { opacity: .85; }
+          .wiki-gate-err { color: #c0392b; font-size: .85rem; margin-bottom: .5rem; }
+          body.wiki-authed .wiki-gate { display: none !important; }
+        `}} />
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            var H="5a4238619a0d70aa82f35543d0bdb6d470e6d477a160554e5cce523357f8b6c6";
+            if(sessionStorage.getItem("wiki-auth")===H){
+              document.body?document.body.classList.add("wiki-authed"):
+              document.addEventListener("DOMContentLoaded",function(){document.body.classList.add("wiki-authed")});
+            }
+          })();
+        `}} />
       </head>
     )
   }

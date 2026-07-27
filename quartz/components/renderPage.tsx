@@ -263,6 +263,38 @@ export function renderPage(
     <html lang={lang} dir={direction}>
       <Head {...componentData} />
       <body data-slug={slug}>
+        <div class="wiki-gate" id="wiki-gate">
+          <div class="wiki-gate-card">
+            <h2>Wiki</h2>
+            <p id="wiki-gate-err" class="wiki-gate-err" style="display:none"></p>
+            <input id="wiki-gate-pw" type="password" placeholder="パスワード" autofocus />
+            <button id="wiki-gate-btn">ログイン</button>
+          </div>
+        </div>
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            var H="5a4238619a0d70aa82f35543d0bdb6d470e6d477a160554e5cce523357f8b6c6";
+            if(sessionStorage.getItem("wiki-auth")===H){
+              document.body.classList.add("wiki-authed");
+            } else {
+              document.getElementById("wiki-gate-btn").onclick=async function(){
+                var pw=document.getElementById("wiki-gate-pw").value;
+                var buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(pw));
+                var hash=Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,"0")}).join("");
+                if(hash===H){
+                  sessionStorage.setItem("wiki-auth",H);
+                  document.body.classList.add("wiki-authed");
+                } else {
+                  document.getElementById("wiki-gate-err").textContent="パスワードが違います";
+                  document.getElementById("wiki-gate-err").style.display="block";
+                }
+              };
+              document.getElementById("wiki-gate-pw").onkeydown=function(e){
+                if(e.key==="Enter")document.getElementById("wiki-gate-btn").click();
+              };
+            }
+          })();
+        `}} />
         <div id="quartz-root" class="page">
           <Body {...componentData}>
             {LeftComponent}

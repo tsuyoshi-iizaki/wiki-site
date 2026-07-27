@@ -1,4 +1,4 @@
-name: Build, Encrypt & Deploy
+name: Build & Deploy
 
 on:
   push:
@@ -33,18 +33,6 @@ jobs:
         run: |
           npx quartz build
           touch public/.nojekyll
-
-      - name: Encrypt with Staticrypt
-        env:
-          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
-        run: |
-          find public -name '*.html' | xargs npx staticrypt \
-            -p "$SITE_PASSWORD" \
-            --short \
-            --remember 30 \
-            --template-title 'Wiki' \
-            --template-instructions 'パスワードを入力してください' \
-            -d public
 
       - uses: actions/upload-pages-artifact@v3
         with:
